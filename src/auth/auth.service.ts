@@ -1,7 +1,7 @@
-import { 
-  Injectable, 
-  ConflictException, 
-  UnauthorizedException 
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -21,10 +21,7 @@ export class AuthService {
     // Check if user already exists
     const userExists = await this.prisma.user.findFirst({
       where: {
-        OR: [
-          { username: registerDto.username },
-          { email: registerDto.email },
-        ],
+        OR: [{ username: registerDto.username }, { email: registerDto.email }],
       },
     });
 
@@ -101,4 +98,3 @@ export class AuthService {
     });
   }
 }
-

@@ -55,7 +55,9 @@ describe('AuthService', () => {
     it('should throw ConflictException if username or email already exists', async () => {
       mockPrismaService.user.findFirst.mockResolvedValue({ id: 'some-id' });
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockPrismaService.user.findFirst).toHaveBeenCalledWith({
         where: {
           OR: [
@@ -72,7 +74,9 @@ describe('AuthService', () => {
       const token = 'jwt-token';
 
       mockPrismaService.user.findFirst.mockResolvedValue(null);
-      jest.spyOn(bcrypt, 'hash').mockImplementation(() => Promise.resolve(hashedPassword));
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockImplementation(() => Promise.resolve(hashedPassword));
       mockPrismaService.user.create.mockResolvedValue({
         id: userId,
         username: registerDto.username,
@@ -117,7 +121,9 @@ describe('AuthService', () => {
     it('should throw UnauthorizedException if user not found', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
         where: { username: loginDto.username },
       });
@@ -131,13 +137,20 @@ describe('AuthService', () => {
       };
 
       mockPrismaService.user.findUnique.mockResolvedValue(user);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(false));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(false));
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
         where: { username: loginDto.username },
       });
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginDto.password, user.password);
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        loginDto.password,
+        user.password,
+      );
     });
 
     it('should return user and token on successful login', async () => {
@@ -151,7 +164,9 @@ describe('AuthService', () => {
       const token = 'jwt-token';
 
       mockPrismaService.user.findUnique.mockResolvedValue(user);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
       mockJwtService.sign.mockReturnValue(token);
 
       const result = await service.login(loginDto);
@@ -159,7 +174,10 @@ describe('AuthService', () => {
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
         where: { username: loginDto.username },
       });
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginDto.password, user.password);
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        loginDto.password,
+        user.password,
+      );
       expect(mockJwtService.sign).toHaveBeenCalledWith({
         sub: user.id,
         username: user.username,
@@ -174,4 +192,3 @@ describe('AuthService', () => {
     });
   });
 });
-
