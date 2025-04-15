@@ -135,13 +135,15 @@ describe('AuthController', () => {
         email: 'test@example.com',
         role: UserRole.USER,
       };
-      
+
       // Directly mock the method call and implementation
-      jest.spyOn(controller, 'getProfile').mockImplementation(() => userProfile);
-      
+      jest
+        .spyOn(controller, 'getProfile')
+        .mockImplementation(() => userProfile);
+
       // Call the method directly without passing a request
       const result = controller.getProfile({} as any);
-      
+
       expect(result).toEqual(userProfile);
     });
   });

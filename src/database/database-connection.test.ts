@@ -28,7 +28,9 @@ describe('Database Connection', () => {
 
   it('should connect to the database', async () => {
     // Execute a simple query to verify the connection
-    const result = await prismaService.$queryRaw<{ result: number }[]>`SELECT 1 as result`;
+    const result = await prismaService.$queryRaw<
+      { result: number }[]
+    >`SELECT 1 as result`;
     expect(result[0].result).toBe(1);
   });
-}); 
+});
