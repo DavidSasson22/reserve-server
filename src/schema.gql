@@ -43,8 +43,11 @@ scalar JSON
 type Mutation {
   adminRemoveBusiness(id: ID!): Boolean!
   createBusiness(input: CreateBusinessInput!): Business!
+  deleteMyAccount: Boolean!
+  deleteUser(id: ID!): Boolean!
   removeBusiness(id: ID!): Boolean!
   updateBusiness(input: UpdateBusinessInput!): Business!
+  updateUser(input: UpdateUserInput!): User!
 }
 
 input PaginationInput {
@@ -56,6 +59,9 @@ type Query {
   business(id: ID!): Business!
   businesses(pagination: PaginationInput): BusinessConnection!
   myBusinesses: [Business!]!
+  user(id: ID!): User!
+  userProfile: User!
+  users: [User!]!
 }
 
 type Tag {
@@ -67,7 +73,9 @@ type Tag {
   updatedAt: DateTime!
 }
 
-"""Type of tag (location, area, or field)"""
+"""
+Type of tag (location, area, or field)
+"""
 enum TagType {
   AREA
   FIELD
@@ -81,6 +89,15 @@ input UpdateBusinessInput {
   links: JSON
   name: String
   photos: [String!]
+}
+
+input UpdateUserInput {
+  email: String
+  firstName: String
+  id: ID!
+  lastName: String
+  phone: String
+  reserveServiceDescription: String
 }
 
 type User {
@@ -97,7 +114,9 @@ type User {
   username: String!
 }
 
-"""Role of the user (USER or ADMIN)"""
+"""
+Role of the user (USER or ADMIN)
+"""
 enum UserRole {
   ADMIN
   USER

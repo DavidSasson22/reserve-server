@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { BusinessModule } from './business/business.module';
+import { UsersModule } from './users/users.module';
 import { Request } from 'express';
 import { User } from './auth/models/user.model';
 
@@ -19,6 +20,7 @@ interface GqlContext {
     PrismaModule,
     AuthModule,
     BusinessModule,
+    UsersModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
