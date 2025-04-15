@@ -8,4 +8,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [BusinessResolver, BusinessService],
   exports: [BusinessService],
 })
-export class BusinessModule {} 
+export class BusinessModule {}

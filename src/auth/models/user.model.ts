@@ -45,4 +45,4 @@ export class User {
 
   @Field(() => [Business], { nullable: true })
   businesses?: Business[];
-} 
+}

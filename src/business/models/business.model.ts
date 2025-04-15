@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { User } from '../../auth/models/user.model';
 import { Tag } from './tag.model';
 import { GraphQLJSON } from 'graphql-type-json';
+import { ContactInfo, BusinessLinks } from '../dto/create-business.input';
 
 @ObjectType()
 export class Business {
@@ -18,10 +19,10 @@ export class Business {
   ownerId: string;
 
   @Field(() => GraphQLJSON)
-  contactInfo: Record<string, any>;
+  contactInfo: ContactInfo;
 
   @Field(() => GraphQLJSON)
-  links: Record<string, any>;
+  links: BusinessLinks;
 
   @Field(() => [String])
   photos: string[];
@@ -37,4 +38,4 @@ export class Business {
 
   @Field(() => [Tag], { nullable: true })
   tags?: Tag[];
-} 
+}

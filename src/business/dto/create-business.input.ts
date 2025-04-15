@@ -1,36 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { GraphQLJSON } from 'graphql-type-json';
 
-@InputType()
-class ContactInfoInput {
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  email: string;
-
-  @Field({ nullable: true })
-  @IsString()
+// Define type-safe interfaces for our JSON objects
+export interface ContactInfo {
+  email?: string;
   phone?: string;
+  address?: string;
+  [key: string]: any; // Allow for additional fields
 }
 
-@InputType()
-class LinksInput {
-  @Field({ nullable: true })
-  @IsString()
+export interface BusinessLinks {
   website?: string;
-
-  @Field({ nullable: true })
-  @IsString()
   facebook?: string;
-
-  @Field({ nullable: true })
-  @IsString()
   instagram?: string;
-
-  @Field({ nullable: true })
-  @IsString()
   twitter?: string;
+  [key: string]: any; // Allow for additional fields
 }
 
 @InputType()
@@ -45,18 +30,16 @@ export class CreateBusinessInput {
   @IsNotEmpty()
   description: string;
 
-  @Field(() => ContactInfoInput)
-  @ValidateNested()
-  @Type(() => ContactInfoInput)
-  contactInfo: ContactInfoInput;
+  @Field(() => GraphQLJSON)
+  @IsObject()
+  contactInfo: ContactInfo;
 
-  @Field(() => LinksInput)
-  @ValidateNested()
-  @Type(() => LinksInput)
-  links: LinksInput;
+  @Field(() => GraphQLJSON)
+  @IsObject()
+  links: BusinessLinks;
 
   @Field(() => [String], { nullable: true })
   @IsArray()
   @IsString({ each: true })
   photos?: string[];
-} 
+}

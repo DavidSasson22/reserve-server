@@ -9,6 +9,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/models/user.model';
 import { GqlContext } from './interfaces/graphql-context.interface';
+import { BusinessConnection, PaginationInput } from './dto/pagination.input';
 
 @Resolver(() => Business)
 export class BusinessResolver {
@@ -25,9 +26,11 @@ export class BusinessResolver {
     return this.businessService.create(userId, createBusinessInput);
   }
 
-  @Query(() => [Business], { name: 'businesses' })
-  findAll() {
-    return this.businessService.findAll();
+  @Query(() => BusinessConnection, { name: 'businesses' })
+  findAll(
+    @Args('pagination', { nullable: true }) pagination: PaginationInput = {},
+  ) {
+    return this.businessService.findAll(pagination);
   }
 
   @Query(() => Business, { name: 'business' })
@@ -79,4 +82,4 @@ export class BusinessResolver {
     const userRole = UserRole.ADMIN;
     return this.businessService.remove(userId, userRole, id);
   }
-} 
+}

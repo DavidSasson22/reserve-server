@@ -31,4 +31,4 @@ export class Tag {
 
   @Field(() => [Business], { nullable: true })
   businesses?: Business[];
-} 
+}

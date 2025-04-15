@@ -8,4 +8,4 @@ export class UpdateBusinessInput extends PartialType(CreateBusinessInput) {
   @IsUUID()
   @IsNotEmpty()
   id: string;
-} 
+}

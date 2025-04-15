@@ -16,15 +16,16 @@ type Business {
   updatedAt: DateTime!
 }
 
-input ContactInfoInput {
-  email: String!
-  phone: String
+type BusinessConnection {
+  nextCursor: String
+  nodes: [Business!]!
+  totalCount: Int!
 }
 
 input CreateBusinessInput {
-  contactInfo: ContactInfoInput!
+  contactInfo: JSON!
   description: String!
-  links: LinksInput!
+  links: JSON!
   name: String!
   photos: [String!]
 }
@@ -39,13 +40,6 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-input LinksInput {
-  facebook: String
-  instagram: String
-  twitter: String
-  website: String
-}
-
 type Mutation {
   adminRemoveBusiness(id: ID!): Boolean!
   createBusiness(input: CreateBusinessInput!): Business!
@@ -53,9 +47,14 @@ type Mutation {
   updateBusiness(input: UpdateBusinessInput!): Business!
 }
 
+input PaginationInput {
+  cursor: String
+  take: Int = 10
+}
+
 type Query {
   business(id: ID!): Business!
-  businesses: [Business!]!
+  businesses(pagination: PaginationInput): BusinessConnection!
   myBusinesses: [Business!]!
 }
 
@@ -76,10 +75,10 @@ enum TagType {
 }
 
 input UpdateBusinessInput {
-  contactInfo: ContactInfoInput
+  contactInfo: JSON
   description: String
   id: ID!
-  links: LinksInput
+  links: JSON
   name: String
   photos: [String!]
 }
