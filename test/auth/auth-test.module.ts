@@ -4,10 +4,6 @@ import { PrismaModule } from '../../src/prisma/prisma.module';
 import { AuthModule } from '../../src/auth/auth.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    PrismaModule,
-    AuthModule,
-  ],
+  imports: [ConfigModule, PrismaModule, AuthModule],
 })
-export class AuthTestModule {} 
+export class AuthTestModule {}

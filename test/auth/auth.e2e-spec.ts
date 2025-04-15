@@ -20,7 +20,7 @@ interface AuthResponse {
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
-  
+
   const testUser = {
     username: 'testuser',
     email: 'test@example.com',
@@ -28,10 +28,10 @@ describe('AuthController (e2e)', () => {
     firstName: 'Test',
     lastName: 'User',
     phone: '1234567890',
-    reserveServiceDescription: 
+    reserveServiceDescription:
       'I served in the military for 3 years as a combat engineer.',
   };
-  
+
   let authToken: string;
   let userId: string;
 
@@ -41,7 +41,7 @@ describe('AuthController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -49,19 +49,16 @@ describe('AuthController (e2e)', () => {
         forbidNonWhitelisted: true,
       }),
     );
-    
+
     await app.init();
-    
+
     prismaService = app.get<PrismaService>(PrismaService);
-    
+
     // Clean the database before tests
     try {
       await prismaService.user.deleteMany({
         where: {
-          OR: [
-            { username: testUser.username },
-            { email: testUser.email },
-          ],
+          OR: [{ username: testUser.username }, { email: testUser.email }],
         },
       });
     } catch (error) {
@@ -74,16 +71,13 @@ describe('AuthController (e2e)', () => {
       // Clean up after tests
       await prismaService.user.deleteMany({
         where: {
-          OR: [
-            { username: testUser.username },
-            { email: testUser.email },
-          ],
+          OR: [{ username: testUser.username }, { email: testUser.email }],
         },
       });
     } catch (error) {
       console.error('Database cleanup error:', error);
     }
-    
+
     await app?.close();
   });
 
@@ -93,30 +87,33 @@ describe('AuthController (e2e)', () => {
         .post('/auth/register')
         .send(testUser)
         .expect(201);
-      
+
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
       expect(response.body).toHaveProperty('firstName', testUser.firstName);
       expect(response.body).toHaveProperty('lastName', testUser.lastName);
       expect(response.body).toHaveProperty('phone', testUser.phone);
-      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
+      expect(response.body).toHaveProperty(
+        'reserveServiceDescription',
+        testUser.reserveServiceDescription,
+      );
       expect(response.body).toHaveProperty('role', UserRole.USER);
       expect(response.body).toHaveProperty('access_token');
-      
+
       // Save the user ID and token for later tests
       const authResponse = response.body as AuthResponse;
       userId = authResponse.id;
       authToken = authResponse.access_token;
     });
-    
+
     it('/auth/register (POST) - should not allow duplicate registration', async () => {
       return request(app.getHttpServer())
         .post('/auth/register')
         .send(testUser)
         .expect(409); // Conflict
     });
-    
+
     it('/auth/login (POST) - should authenticate a user', async () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -125,21 +122,24 @@ describe('AuthController (e2e)', () => {
           password: testUser.password,
         })
         .expect(201);
-      
+
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
       expect(response.body).toHaveProperty('firstName', testUser.firstName);
       expect(response.body).toHaveProperty('lastName', testUser.lastName);
       expect(response.body).toHaveProperty('phone', testUser.phone);
-      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
+      expect(response.body).toHaveProperty(
+        'reserveServiceDescription',
+        testUser.reserveServiceDescription,
+      );
       expect(response.body).toHaveProperty('access_token');
-      
+
       // Update the auth token with the latest
       const authResponse = response.body as AuthResponse;
       authToken = authResponse.access_token;
     });
-    
+
     it('/auth/login (POST) - should fail with invalid credentials', async () => {
       return request(app.getHttpServer())
         .post('/auth/login')
@@ -150,30 +150,31 @@ describe('AuthController (e2e)', () => {
         .expect(401); // Unauthorized
     });
   });
-  
+
   describe('Authorization', () => {
     it('/auth/profile (GET) - should get user profile with valid token', async () => {
       const response = await request(app.getHttpServer())
         .get('/auth/profile')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
-      
+
       expect(response.body).toHaveProperty('id', userId);
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
       expect(response.body).toHaveProperty('firstName', testUser.firstName);
       expect(response.body).toHaveProperty('lastName', testUser.lastName);
       expect(response.body).toHaveProperty('phone', testUser.phone);
-      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
+      expect(response.body).toHaveProperty(
+        'reserveServiceDescription',
+        testUser.reserveServiceDescription,
+      );
       expect(response.body).toHaveProperty('role', UserRole.USER);
     });
-    
+
     it('/auth/profile (GET) - should fail without token', async () => {
-      return request(app.getHttpServer())
-        .get('/auth/profile')
-        .expect(401); // Unauthorized
+      return request(app.getHttpServer()).get('/auth/profile').expect(401); // Unauthorized
     });
-    
+
     it('/auth/admin (GET) - should deny access to regular users', async () => {
       return request(app.getHttpServer())
         .get('/auth/admin')
@@ -181,6 +182,4 @@ describe('AuthController (e2e)', () => {
         .expect(403); // Forbidden
     });
   });
-}); 
-
-
+});

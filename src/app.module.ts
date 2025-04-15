@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from './config/config.module';
@@ -9,21 +7,16 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { BusinessModule } from './business/business.module';
 import { Request } from 'express';
+import { User } from './auth/models/user.model';
 
 interface GqlContext {
-  req: Request & {
-    user?: {
-      id: string;
-      username: string;
-      role: string;
-    };
-  };
+  req: Request & { user?: User };
 }
 
 @Module({
   imports: [
-    ConfigModule, 
-    PrismaModule, 
+    ConfigModule,
+    PrismaModule,
     AuthModule,
     BusinessModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -31,10 +24,12 @@ interface GqlContext {
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
-      context: ({ req }): GqlContext => ({ req }),
+      context: ({ req }: { req: Request }): GqlContext => ({
+        req: req as Request & { user?: User },
+      }),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
