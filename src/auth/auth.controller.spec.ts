@@ -40,6 +40,11 @@ describe('AuthController', () => {
         id: 'user-id',
         username: 'testuser',
         email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '1234567890',
+        reserveServiceDescription:
+          'I served in the military for 3 years as a combat engineer.',
         role: UserRole.USER,
       };
       return true;
@@ -86,11 +91,20 @@ describe('AuthController', () => {
         username: 'testuser',
         email: 'test@example.com',
         password: 'password123',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '1234567890',
+        reserveServiceDescription:
+          'I served in the military for 3 years as a combat engineer.',
       };
       const expectedResult = {
         id: 'user-id',
         username: registerDto.username,
         email: registerDto.email,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
+        phone: registerDto.phone,
+        reserveServiceDescription: registerDto.reserveServiceDescription,
         role: UserRole.USER,
         access_token: 'jwt-token',
       };
@@ -114,6 +128,11 @@ describe('AuthController', () => {
         id: 'user-id',
         username: loginDto.username,
         email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '1234567890',
+        reserveServiceDescription:
+          'I served in the military for 3 years as a combat engineer.',
         role: UserRole.USER,
         access_token: 'jwt-token',
       };
@@ -133,6 +152,11 @@ describe('AuthController', () => {
         id: 'user-id',
         username: 'testuser',
         email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '1234567890',
+        reserveServiceDescription:
+          'I served in the military for 3 years as a combat engineer.',
         role: UserRole.USER,
       };
 

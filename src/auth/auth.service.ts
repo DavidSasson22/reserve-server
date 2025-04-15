@@ -38,6 +38,10 @@ export class AuthService {
         username: registerDto.username,
         email: registerDto.email,
         password: hashedPassword,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
+        phone: registerDto.phone,
+        reserveServiceDescription: registerDto.reserveServiceDescription,
         role: UserRole.USER,
       },
     });
@@ -49,6 +53,10 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      reserveServiceDescription: user.reserveServiceDescription,
       role: user.role,
       access_token: token,
     };
@@ -81,6 +89,10 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      reserveServiceDescription: user.reserveServiceDescription,
       role: user.role,
       access_token: token,
     };
@@ -94,7 +106,16 @@ export class AuthService {
   async validateUser(userId: string) {
     return this.prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, username: true, email: true, role: true },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        reserveServiceDescription: true,
+        role: true,
+      },
     });
   }
 }

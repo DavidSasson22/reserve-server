@@ -8,7 +8,10 @@ import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
+  // We're keeping these for type safety but not using them directly
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let prismaService: PrismaService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let jwtService: JwtService;
 
   const mockPrismaService = {
@@ -50,6 +53,11 @@ describe('AuthService', () => {
       username: 'testuser',
       email: 'test@example.com',
       password: 'password123',
+      firstName: 'Test',
+      lastName: 'User',
+      phone: '1234567890',
+      reserveServiceDescription:
+        'I served in the military for 3 years as a combat engineer.',
     };
 
     it('should throw ConflictException if username or email already exists', async () => {
@@ -74,13 +82,18 @@ describe('AuthService', () => {
       const token = 'jwt-token';
 
       mockPrismaService.user.findFirst.mockResolvedValue(null);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       jest
         .spyOn(bcrypt, 'hash')
-        .mockImplementation(() => Promise.resolve(hashedPassword));
+        .mockImplementation((): string => hashedPassword);
       mockPrismaService.user.create.mockResolvedValue({
         id: userId,
         username: registerDto.username,
         email: registerDto.email,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
+        phone: registerDto.phone,
+        reserveServiceDescription: registerDto.reserveServiceDescription,
         role: UserRole.USER,
         password: hashedPassword,
       });
@@ -95,6 +108,10 @@ describe('AuthService', () => {
           username: registerDto.username,
           email: registerDto.email,
           password: hashedPassword,
+          firstName: registerDto.firstName,
+          lastName: registerDto.lastName,
+          phone: registerDto.phone,
+          reserveServiceDescription: registerDto.reserveServiceDescription,
           role: UserRole.USER,
         },
       });
@@ -106,6 +123,10 @@ describe('AuthService', () => {
         id: userId,
         username: registerDto.username,
         email: registerDto.email,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
+        phone: registerDto.phone,
+        reserveServiceDescription: registerDto.reserveServiceDescription,
         role: UserRole.USER,
         access_token: token,
       });
@@ -137,9 +158,8 @@ describe('AuthService', () => {
       };
 
       mockPrismaService.user.findUnique.mockResolvedValue(user);
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(false));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      jest.spyOn(bcrypt, 'compare').mockImplementation((): boolean => false);
 
       await expect(service.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
@@ -158,15 +178,19 @@ describe('AuthService', () => {
         id: 'user-id',
         username: loginDto.username,
         email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '1234567890',
+        reserveServiceDescription:
+          'I served in the military for 3 years as a combat engineer.',
         role: UserRole.USER,
         password: 'hashed-password',
       };
       const token = 'jwt-token';
 
       mockPrismaService.user.findUnique.mockResolvedValue(user);
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(true));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      jest.spyOn(bcrypt, 'compare').mockImplementation((): boolean => true);
       mockJwtService.sign.mockReturnValue(token);
 
       const result = await service.login(loginDto);
@@ -186,6 +210,10 @@ describe('AuthService', () => {
         id: user.id,
         username: user.username,
         email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        reserveServiceDescription: user.reserveServiceDescription,
         role: user.role,
         access_token: token,
       });

@@ -9,6 +9,10 @@ interface AuthResponse {
   id: string;
   username: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  reserveServiceDescription: string;
   role: UserRole;
   access_token: string;
 }
@@ -21,6 +25,11 @@ describe('AuthController (e2e)', () => {
     username: 'testuser',
     email: 'test@example.com',
     password: 'password123',
+    firstName: 'Test',
+    lastName: 'User',
+    phone: '1234567890',
+    reserveServiceDescription: 
+      'I served in the military for 3 years as a combat engineer.',
   };
   
   let authToken: string;
@@ -88,6 +97,10 @@ describe('AuthController (e2e)', () => {
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
+      expect(response.body).toHaveProperty('firstName', testUser.firstName);
+      expect(response.body).toHaveProperty('lastName', testUser.lastName);
+      expect(response.body).toHaveProperty('phone', testUser.phone);
+      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
       expect(response.body).toHaveProperty('role', UserRole.USER);
       expect(response.body).toHaveProperty('access_token');
       
@@ -116,6 +129,10 @@ describe('AuthController (e2e)', () => {
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
+      expect(response.body).toHaveProperty('firstName', testUser.firstName);
+      expect(response.body).toHaveProperty('lastName', testUser.lastName);
+      expect(response.body).toHaveProperty('phone', testUser.phone);
+      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
       expect(response.body).toHaveProperty('access_token');
       
       // Update the auth token with the latest
@@ -144,6 +161,10 @@ describe('AuthController (e2e)', () => {
       expect(response.body).toHaveProperty('id', userId);
       expect(response.body).toHaveProperty('username', testUser.username);
       expect(response.body).toHaveProperty('email', testUser.email);
+      expect(response.body).toHaveProperty('firstName', testUser.firstName);
+      expect(response.body).toHaveProperty('lastName', testUser.lastName);
+      expect(response.body).toHaveProperty('phone', testUser.phone);
+      expect(response.body).toHaveProperty('reserveServiceDescription', testUser.reserveServiceDescription);
       expect(response.body).toHaveProperty('role', UserRole.USER);
     });
     
@@ -161,3 +182,5 @@ describe('AuthController (e2e)', () => {
     });
   });
 }); 
+
+

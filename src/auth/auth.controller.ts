@@ -19,6 +19,10 @@ interface RequestWithUser extends Request {
     id: string;
     username: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    reserveServiceDescription: string;
     role: UserRole;
   };
 }
